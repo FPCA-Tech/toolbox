@@ -1,0 +1,6 @@
+.env
+/vendor/
+composer.phar
+storage/*.lock
+storage/*.log
+!storage/.gitkeep
