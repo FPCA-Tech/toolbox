@@ -1,26 +1,23 @@
 <?php
 // public/recent-worship-services/index.php
-//
-// Renders the sermon gallery from whatever is already in the database.
-// This file no longer talks to the YouTube API — that happens on a
-// schedule via sync.php (see the project root). Keeping the request path
-// DB-only means page loads are fast and consistent regardless of when the
-// last sync happened.
 
+// 1. Explicitly opt-out of authentication for this embed page
+define('REQUIRE_AUTH', false);
+
+// 2. Load the bootstrap (handles environment and global $pdo initialization)
 require_once __DIR__ . '/../../config/bootstrap.php';
-require_once __DIR__ . '/../../includes/Database.php';
+
+// 3. Load the repository
 require_once __DIR__ . '/../../includes/WorshipRepository.php';
 
 $all_videos = [];
 $loadError = false;
 
 try {
-  $pdo = getDatabaseConnection();
+  // Use the global $pdo automatically created by bootstrap.php
+  // You do NOT need to call getDatabaseConnection() again here
   $all_videos = WorshipRepository::getDisplayableServices($pdo);
 } catch (Throwable $e) {
-  // Catches PDO connection failures as well as query failures, so a DB
-  // outage degrades to a friendly error message instead of a fatal error
-  // or a silently empty page.
   error_log('Worship Services Gallery Error: ' . $e->getMessage());
   $loadError = true;
 }

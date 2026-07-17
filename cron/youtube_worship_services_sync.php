@@ -1,19 +1,13 @@
 <?php
 // cron/youtube_worship_services_sync.php
-//
-// Cron entry point — pulls the latest videos from YouTube and updates the
-// database. This intentionally lives OUTSIDE /public so it's never reachable
-// over HTTP; only run it from the command line / a scheduled task.
-//
-// Suggested crontab entry (runs every hour, matching the default CACHE_TIME):
-//   0 * * * * php /path/to/project/cron/youtube_worship_services_sync.php >> /path/to/project/storage/youtube_worship_services_sync.log 2>&1
 
+define('REQUIRE_AUTH', false);
+
+// 1. Require bootstrap - this now handles autoload, env, DB connection, and constants
 require_once __DIR__ . '/../config/bootstrap.php';
-require_once __DIR__ . '/../includes/Database.php';
 require_once __DIR__ . '/../includes/YoutubeWorshipServicesSync.php';
 
-// Guard against overlapping runs — e.g. a slow YouTube API response causing
-// one sync to still be in progress when the next cron tick fires.
+// Guard against overlapping runs
 $lockFile = fopen(__DIR__ . '/../storage/youtube_worship_services_sync.lock', 'c');
 if (!$lockFile || !flock($lockFile, LOCK_EX | LOCK_NB)) {
   fwrite(STDERR, 'Sync already running — exiting.' . PHP_EOL);
@@ -21,7 +15,8 @@ if (!$lockFile || !flock($lockFile, LOCK_EX | LOCK_NB)) {
 }
 
 try {
-  $pdo = getDatabaseConnection();
+  // 2. Use the $pdo initialized in bootstrap.php
+  // No need for 'getDatabaseConnection()' here anymore!
 
   $metaStmt = $pdo->prepare("SELECT setting_value FROM site_settings WHERE setting_key = 'last_youtube_worship_services_sync' LIMIT 1");
   $metaStmt->execute();
