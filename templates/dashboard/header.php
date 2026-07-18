@@ -10,9 +10,11 @@ global $tools;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FPCA Toolbelt Dashboard</title>
+  <title><?php echo htmlspecialchars(getPageTitle()); ?></title>
+  <meta name="description" content="<?php echo htmlspecialchars(getPageDescription()); ?>">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/assets/js/dashboard.js" defer></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22><?php echo htmlspecialchars(getPageIcon()); ?></text></svg>">
 </head>
 
 <body class="bg-gray-100 flex min-h-screen">
@@ -65,8 +67,11 @@ global $tools;
 
   <div id="main-content" class="flex-1 md:ml-64 flex flex-col transition-all duration-300">
 
-    <header class="sticky top-0 bg-white shadow-sm p-4 z-10 flex justify-between items-center h-16">
-      <span class="font-semibold text-lg text-gray-800">FPCA Tech Tools</span>
+    <header class="sticky top-0 bg-white shadow-sm p-4 z-10 flex justify-between items-center">
+      <span class="font-semibold text-lg flex items-center gap-2">
+        <span><?php echo $pageIcon; ?></span>
+        <?php echo htmlspecialchars($pageTitle); ?>
+      </span>
       <button class="md:hidden text-gray-600 hover:text-gray-900 font-medium text-sm border border-gray-200 px-3 py-1.5 rounded-lg bg-gray-50 focus:outline-none"
         onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
         Menu

@@ -57,3 +57,36 @@ function getVersion()
   global $version;
   return $version;
 }
+
+// Get Page Details for the current tool based on the request URI
+$currentPath = $_SERVER['REQUEST_URI'];
+$currentTool = null;
+
+foreach ($tools as $tool) {
+  if ($tool['path'] === $currentPath) {
+    $currentTool = $tool;
+    break;
+  }
+}
+
+$pageTitle = $currentTool ? $currentTool['name'] : 'FPCA Tech Tools';
+$pageDescription = $currentTool ? $currentTool['desc'] : 'FPCA Tech Tools Dashboard';
+$pageIcon = $currentTool ? $currentTool['icon'] : '🛠️';
+
+function getPageTitle()
+{
+  global $pageTitle;
+  return $pageTitle;
+}
+
+function getPageDescription()
+{
+  global $pageDescription;
+  return $pageDescription;
+}
+
+function getPageIcon()
+{
+  global $pageIcon;
+  return $pageIcon;
+}
