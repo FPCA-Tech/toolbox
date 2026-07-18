@@ -1,8 +1,13 @@
 <?php
 // templates/dashboard/header.php
 
+/** Fix issue with not being accessible to linter
+ * @see config/bootstrap.php 
+ * */
+
 // 1. Force structural scope visibility across nested subfolder execution depths
 global $tools;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +26,7 @@ global $tools;
 
   <aside id="sidebar" class="w-64 h-screen bg-gray-900 text-white fixed hidden md:flex flex-col transition-all duration-300 z-20">
     <div class="p-6 flex justify-between items-center">
-      <a href="/" class="block">
+      <a href="/" class="block" id="sidebar-logo">
         <img src="/assets/images/logo.png" alt="FPCA Tech Tools" class="w-40 h-auto">
       </a>
       <button onclick="toggleSidebar()" class="text-gray-400 focus:outline-none">☰</button>
@@ -69,8 +74,8 @@ global $tools;
 
     <header class="sticky top-0 bg-white shadow-sm p-4 z-10 flex justify-between items-center">
       <span class="font-semibold text-lg flex items-center gap-2">
-        <span><?php echo $pageIcon; ?></span>
-        <?php echo htmlspecialchars($pageTitle); ?>
+        <span><?php echo htmlspecialchars(getPageIcon()); ?></span>
+        <?php echo htmlspecialchars(getPageTitle()); ?>
       </span>
       <button class="md:hidden text-gray-600 hover:text-gray-900 font-medium text-sm border border-gray-200 px-3 py-1.5 rounded-lg bg-gray-50 focus:outline-none"
         onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
