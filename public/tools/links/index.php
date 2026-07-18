@@ -8,7 +8,6 @@ define('REQUIRE_AUTH', true);
 require_once __DIR__ . '/../../../config/bootstrap.php';
 
 // --- THE NAVIGATION FIX ---
-// Assign the factory connection to the expected legacy variable so templates/dashboard/header.php can read it
 $db = Database::getConnection();
 
 // --- 3. Handle Actions (PRG Pattern) ---
@@ -25,11 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $active_at = date('Y-m-d H:i:s', strtotime($_POST['active_at']));
   $target_url = $_POST['target_url'] ?? '';
 
-  if ($slug === 'livestream' && !empty($_POST['youtube_id'])) {
+  // If slug is livestream or arabic-livestream, generate the target embed url cleanly
+  if (in_array($slug, ['livestream', 'arabic-livestream']) && !empty($_POST['youtube_id'])) {
     $videoId = trim($_POST['youtube_id']);
     $target_url = "https://www.youtube.com/embed/{$videoId}?autoplay=1";
-  } elseif (!empty($_FILES['pdf']['name'])) {
-    $uploadDir = '../../../public/uploads/'; // Adjusted path for umbrella layout
+  }
+  // Prioritize physical PDF documentation drops if attached to the request payload
+  elseif (!empty($_FILES['pdf']['name'])) {
+    $uploadDir = '../../../public/uploads/';
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
     $fileName = time() . '_' . basename($_FILES['pdf']['name']);
     if (move_uploaded_file($_FILES['pdf']['tmp_name'], $uploadDir . $fileName)) {
@@ -77,8 +79,9 @@ require_once __DIR__ . '/../../../templates/dashboard/header.php';
           <div>
             <label class="block text-xs font-bold text-slate-500 uppercase">Slug</label>
             <select name="slug" id="slugSelect" required onchange="toggleInputs()" class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-              <option value="livestream">livestream</option>
-              <option value="announcements">announcements</option>
+              <option value="livestream">English Livestream</option>
+              <option value="arabic-livestream">Arabic Livestream</option>
+              <option value="announcements">Announcements</option>
             </select>
           </div>
 
@@ -93,7 +96,7 @@ require_once __DIR__ . '/../../../templates/dashboard/header.php';
             <input type="url" name="target_url" placeholder="https://..." class="mt-1 block w-full border-slate-300 rounded-lg shadow-sm p-2.5 border focus:ring-2 focus:ring-blue-500 outline-none text-sm">
           </div>
 
-          <div class="bg-slate-50 p-4 rounded-lg border border-dashed border-slate-300 text-center">
+          <div id="uploadInputGroup" class="hidden bg-slate-50 p-4 rounded-lg border border-dashed border-slate-300 text-center">
             <label class="block text-xs font-bold text-slate-500 uppercase mb-2 italic">— OR — PDF Upload</label>
             <input type="file" name="pdf" accept="application/pdf" class="block w-full text-xs text-slate-500 cursor-pointer">
           </div>
@@ -193,17 +196,49 @@ require_once __DIR__ . '/../../../templates/dashboard/header.php';
     const slug = document.getElementById('slugSelect').value;
     const youtubeGroup = document.getElementById('youtubeInputGroup');
     const urlGroup = document.getElementById('urlInputGroup');
+    const uploadGroup = document.getElementById('uploadInputGroup');
 
-    if (slug === 'livestream') {
+    if (['livestream', 'arabic-livestream'].includes(slug)) {
       youtubeGroup.classList.remove('hidden');
       urlGroup.classList.add('hidden');
+      uploadGroup.classList.add('hidden');
     } else {
       youtubeGroup.classList.add('hidden');
       urlGroup.classList.remove('hidden');
+      uploadGroup.classList.remove('hidden');
     }
   }
 
-  // Extend window.onload safety trigger cleanly without overriding framework scripts
+  // THE FIXED CLIPBOARD HELPER: Dynamic Clipboard Router
+  function copySlug(slug, buttonElement) {
+    // Automatically builds the clean route matching your rewrite configurations
+    const fullUrl = `https://tools.fpca.tech/redirect/${slug}`;
+
+    // Uses the browser standard Async Clipboard API
+    navigator.clipboard.writeText(fullUrl).then(() => {
+      // Cache the original SVG layout string 
+      const originalSvg = buttonElement.innerHTML;
+
+      // Swap out the copy sheets icon with a clean green checkmark
+      buttonElement.classList.remove('text-slate-400', 'hover:text-blue-600');
+      buttonElement.classList.add('text-emerald-500');
+      buttonElement.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+            `;
+
+      // Revert the button state back to standard slate after 2 seconds
+      setTimeout(() => {
+        buttonElement.classList.remove('text-emerald-500');
+        buttonElement.classList.add('text-slate-400', 'hover:text-blue-600');
+        buttonElement.innerHTML = originalSvg;
+      }, 2000);
+    }).catch(err => {
+      console.error('Could not copy link text accurately: ', err);
+    });
+  }
+
   if (window.onload) {
     var currentOnLoad = window.onload;
     window.onload = function() {
