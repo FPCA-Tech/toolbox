@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# 1. Strip trailing slashes safely (e.g., /redirect/livestream/ to /redirect/livestream)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ $1 [L,R=301]
+
+# 2. THE FIX: Rewrite clean paths directly to index.php query strings
+# If the requested path is not an actual existing physical file or folder...
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# ...pass everything captured after /redirect/ into the slug variable
+RewriteRule ^(.*)$ index.php?slug=$1 [L,QSA]

@@ -1,17 +1,23 @@
 <?php
 // config/bootstrap.php
-//
-// Shared setup used by BOTH the web app (public/index.php) and the cron
-// sync script (sync.php). Keeping this in one place means the two entry
-// points can never drift out of sync on env handling, timezone, etc.
 
+// Force server's runtime environment to match FPCA Timezone for consistent date/time operations
+date_default_timezone_set('America/New_York');
+
+
+if (!defined('REQUIRE_AUTH')) {
+  define('REQUIRE_AUTH', true);
+}
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../includes/Database.php';
+require_once __DIR__ . '/../includes/Auth.php';
+require_once __DIR__ . '/config.php';
 
+// PHP dotenv library
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-// GLOBAL TIMEZONE LOCK: Forces execution to Eastern Time rules uniformly,
-// regardless of server default.
+// GLOBAL TIMEZONE LOCK
 date_default_timezone_set('America/New_York');
 
 define('DB_HOST', $_ENV['DB_HOST']);
@@ -22,6 +28,32 @@ define('DB_PASS', $_ENV['DB_PASS']);
 define('YT_API_KEY', $_ENV['YT_API_KEY']);
 define('YT_PLAYLIST', $_ENV['YT_PLAYLIST']);
 
-// Minimum seconds between YouTube syncs. Only consulted by sync.php now —
-// the web app no longer triggers syncs itself.
+// FIXED: Removed the extra '$' and ensured clean cast
 define('CACHE_TIME', (int) ($_ENV['CACHE_TIME'] ?? 3600));
+
+// --- AUTHENTICATION & DATABASE INITIALIZATION ---
+
+// 1. Initialize Session
+session_start();
+
+try {
+  // 2. Initialize Database and Auth using the new class structure
+  $pdo = Database::getConnection();
+  $auth = new Auth($pdo);
+} catch (Exception $e) {
+  die("Application setup failed: " . $e->getMessage());
+}
+
+// 3. Conditional Authentication Guard
+if (defined('REQUIRE_AUTH') && REQUIRE_AUTH === true) {
+  if (!$auth->isLoggedIn()) {
+    header('Location: /login.php');
+    exit;
+  }
+}
+
+function getVersion()
+{
+  global $version;
+  return $version;
+}

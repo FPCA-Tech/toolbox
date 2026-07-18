@@ -24,6 +24,7 @@ preacher:Rev. Eliana Maxim
 preacher:FPCA Children
 preacher:FPCA Confirmands 
 preacher:Moufid Khoury
+preacher:Elias Hazim 
 preacher:Abraham Pa Cawi
 ```
 

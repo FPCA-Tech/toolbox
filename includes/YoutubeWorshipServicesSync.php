@@ -1,11 +1,5 @@
 <?php
-// includes/YoutubeSync.php
-//
-// Pulls the full playlist history from the YouTube Data API and upserts it
-// into the youtube_worship_services table. This is the exact logic that used to live
-// inline in index.php — it's unchanged in behavior, just organized and run
-// from sync.php (cron) instead of on the request path.
-
+// includes/YoutubeWorshipServicesSync.php
 class YoutubeWorshipServicesSync
 {
   public static function run(PDO $pdo): void
