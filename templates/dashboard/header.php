@@ -12,7 +12,7 @@ global $tools;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FPCA Toolbelt Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/js/dashboard.js" defer></script>
+  <script src="/assets/js/dashboard.js" defer></script>
 </head>
 
 <body class="bg-gray-100 flex min-h-screen">
@@ -20,7 +20,7 @@ global $tools;
   <aside id="sidebar" class="w-64 h-screen bg-gray-900 text-white fixed hidden md:flex flex-col transition-all duration-300 z-20">
     <div class="p-6 flex justify-between items-center">
       <a href="/" class="block">
-        <img src="/images/logo.png" alt="FPCA Tech Tools" class="w-40 h-auto">
+        <img src="/assets/images/logo.png" alt="FPCA Tech Tools" class="w-40 h-auto">
       </a>
       <button onclick="toggleSidebar()" class="text-gray-400 focus:outline-none">☰</button>
     </div>

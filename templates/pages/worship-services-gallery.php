@@ -15,7 +15,7 @@ $loadError = $loadError ?? false;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Worship Services Gallery</title>
-  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/assets/css/recent-services.css">
 </head>
 
 <body>
@@ -62,7 +62,7 @@ $loadError = $loadError ?? false;
     <script>
       const allSermons = <?php echo json_encode($all_videos, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
     </script>
-    <script src="/js/main.js"></script>
+    <script src="/assets/js/recent-services.js"></script>
   <?php endif; ?>
 </body>
 

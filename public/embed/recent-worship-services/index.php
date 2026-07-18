@@ -22,4 +22,4 @@ try {
   $loadError = true;
 }
 
-require __DIR__ . '/../../../templates/worship-services-gallery.php';
+require __DIR__ . '/../../../templates/pages/worship-services-gallery.php';
