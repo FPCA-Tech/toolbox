@@ -44,12 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="h-full flex flex-col justify-center items-center px-6 py-12 bg-slate-100/60 font-sans antialiased">
 
   <div class="w-full max-w-md">
-    <div class="text-center mb-8">
-      <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 text-white text-2xl font-bold shadow-md mb-3">
-        ⚡
+    <div class="text-center mb-4">
+      <div class=" inline-flex items-center justify-center rounded-xl bg-gray-900 text-white text-2xl font-bold shadow-md mb-3 p-2">
+        <img src="/assets/images/logo.png" alt="FPCA Tech Tools" class="h-20 w-auto">
       </div>
-      <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">FPCA Tech Tools</h1>
-      <p class="text-xs text-slate-400 mt-1 font-medium uppercase tracking-wider">Secure Portal Administrative Gateway</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 sr-only">FPCA Tech Tools</h1>
     </div>
 
     <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
