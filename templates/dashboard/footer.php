@@ -1,10 +1,12 @@
 </main>
 
 <footer class="sticky bottom-0 bg-white border-t border-slate-200 p-4 shrink-0 text-xs text-slate-400 font-medium z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:flex-wrap items-center justify-between gap-2">
+
     <div>
       &copy; <?php echo date('Y'); ?> First Presbyterian Church Allentown.
     </div>
+
     <div class="flex items-center space-x-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-md text-gray-600 font-mono text-[11px]">
       <span class="relative flex h-2 w-2">
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -15,6 +17,13 @@
         <?php echo date('l, M j, Y — g:i a T'); ?>
       </span>
     </div>
+
+    <div class="w-full md:hidden" aria-hidden="true"></div>
+
+    <div class="block basis-full md:hidden text-center w-full mt-2 text-slate-400">
+      Version: <?php echo htmlspecialchars(getVersion()); ?>
+    </div>
+
   </div>
 </footer>
 

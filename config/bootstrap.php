@@ -51,3 +51,9 @@ if (defined('REQUIRE_AUTH') && REQUIRE_AUTH === true) {
     exit;
   }
 }
+
+function getVersion()
+{
+  global $version;
+  return $version;
+}

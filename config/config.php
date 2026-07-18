@@ -1,10 +1,11 @@
 <?php
 // config/config.php
+$version = '1.0.0';
 
 $tools = [
   'recent-worship-services' => [
     'name' => 'Recent Worship Services',
-    'path' => '/recent-worship-services/',
+    'path' => '/embed/recent-worship-services/',
     'desc' => 'View the embed page for recent worship services. This page is publically shareable.',
     'target' => '_blank',
     'icon' => '⛪'

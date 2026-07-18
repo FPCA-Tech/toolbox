@@ -19,7 +19,9 @@ global $tools;
 
   <aside id="sidebar" class="w-64 h-screen bg-gray-900 text-white fixed hidden md:flex flex-col transition-all duration-300 z-20">
     <div class="p-6 flex justify-between items-center">
-      <span id="sidebar-title" class="text-xl font-bold">Toolbelt</span>
+      <a href="/" class="block">
+        <img src="/images/logo.png" alt="FPCA Tech Tools" class="w-40 h-auto">
+      </a>
       <button onclick="toggleSidebar()" class="text-gray-400 focus:outline-none">☰</button>
     </div>
     <nav class="mt-6 flex-grow overflow-y-auto">
@@ -55,6 +57,10 @@ global $tools;
         </span>
       </a>
     </nav>
+    <!-- Print version number in the bottom, left corner of the sidebar -->
+    <div class="p-4 text-xs text-gray-400 border-t border-gray-800">
+      Version: <?php echo htmlspecialchars(getVersion()); ?>
+    </div>
   </aside>
 
   <div id="main-content" class="flex-1 md:ml-64 flex flex-col transition-all duration-300">

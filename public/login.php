@@ -1,53 +1,102 @@
 <?php
 // public/login.php
+// 1. Inform the bootstrapper that authentication is NOT required to view this file
 define('REQUIRE_AUTH', false);
+
+// 2. Load dependencies via the centralized application bootstrapper
 require_once __DIR__ . '/../config/bootstrap.php';
 
-if ($auth->isLoggedIn()) {
-  header('Location: /index.php');
-  exit;
-}
-
 $error = '';
-// Capture the redirect parameter, default to /index.php if not set
-$redirect = $_GET['redirect'] ?? '/index.php';
 
+// 3. Process Authentication Form Post Payloads
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = $_POST['username'] ?? '';
+  $username = trim($_POST['username'] ?? '');
   $password = $_POST['password'] ?? '';
 
-  if ($auth->login($username, $password)) {
-    // Redirect to the captured path or default to index.php
-    header('Location: ' . urldecode($redirect));
-    exit;
+  if (empty($username) || empty($password)) {
+    $error = 'Please fill out all credentials.';
   } else {
-    $error = "Invalid username or password.";
+    // THE FIX: Grab the connection and inject it into the new Auth instance
+    $db = Database::getConnection();
+    $auth = new Auth($db);
+
+    // Call the dynamic instance method cleanly
+    if ($auth->login($username, $password)) {
+      // Success! Send them straight onto the primary dashboard home index
+      header('Location: /index.php');
+      exit;
+    } else {
+      $error = 'Invalid username or password. Please try again.';
+    }
   }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
 
-<?php include __DIR__ . '/../templates/auth_header.php'; ?>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — FPCA Tech Tools</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-<div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-  <h2 class="text-2xl font-bold text-center mb-6">Tools Login</h2>
+<body class="h-full flex flex-col justify-center items-center px-6 py-12 bg-slate-100/60 font-sans antialiased">
 
-  <?php if (!empty($error)): ?>
-    <p class="text-red-500 text-sm mb-4"><?php echo htmlspecialchars($error); ?></p>
-  <?php endif; ?>
-
-  <form method="POST" action="login.php?redirect=<?php echo htmlspecialchars($redirect); ?>" class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Username</label>
-      <input type="text" name="username" required class="w-full mt-1 p-2 border rounded">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 text-white text-2xl font-bold shadow-md mb-3">
+        ⚡
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">FPCA Tech Tools</h1>
+      <p class="text-xs text-slate-400 mt-1 font-medium uppercase tracking-wider">Secure Portal Administrative Gateway</p>
     </div>
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Password</label>
-      <input type="password" name="password" required class="w-full mt-1 p-2 border rounded">
-    </div>
-    <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-      Sign In
-    </button>
-  </form>
-</div>
 
-<?php include __DIR__ . '/../templates/dashboard/footer.php'; ?>
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80">
+
+      <?php if (!empty($error)): ?>
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-5 text-xs font-semibold rounded-r shadow-inner flex items-center space-x-2">
+          <span>⚠️</span>
+          <span><?php echo htmlspecialchars($error); ?></span>
+        </div>
+      <?php endif; ?>
+
+      <form method="POST" class="space-y-5">
+        <div>
+          <label for="username" class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Username</label>
+          <div class="mt-1.5 relative rounded-md shadow-sm">
+            <input type="text" name="username" id="username" required autocomplete="username"
+              placeholder="admin"
+              class="block w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white font-medium text-slate-800 transition">
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs font-bold text-slate-500 uppercase tracking-wide">Password</label>
+          <div class="mt-1.5 relative rounded-md shadow-sm">
+            <input type="password" name="password" id="password" required autocomplete="current-password"
+              placeholder="••••••••"
+              class="block w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white font-medium text-slate-800 transition">
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit"
+            class="w-full bg-gray-900 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-800 transition-all shadow-md active:scale-[0.98] text-sm tracking-wide flex items-center justify-center space-x-2 cursor-pointer">
+            <span>Sign In</span>
+            <span class="opacity-60 text-xs">➔</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="text-center mt-6 text-xs text-slate-400 font-medium">
+      <a href="https://fpcallentown.org" target="_blank" class="hover:text-slate-600 transition hover:underline">
+        &copy; <?php echo date('Y'); ?> First Presbyterian Church Allentown
+      </a>
+    </div>
+  </div>
+
+</body>
+
+</html>
