@@ -1,6 +1,6 @@
 <?php
 // config/config.php
-$version = '1.0.0';
+$version = '1.0.1';
 
 $tools = [
   'recent-worship-services' => [

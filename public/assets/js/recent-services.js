@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : '';
 
     return `
-      <a href="https://www.youtube.com/watch?v=${video.video_id}" target="_top" rel="noopener">
+      <a href="https://www.youtube.com/watch?v=${video.video_id}" target="_blank" rel="noopener">
         <div class="video-card">
           <div class="thumbnail-wrapper">
             <img src="${video.thumbnail}" alt="${safeTitle}" loading="lazy">
