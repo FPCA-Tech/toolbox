@@ -2,7 +2,7 @@
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const content = document.getElementById('main-content');
-  const title = document.getElementById('sidebar-title');
+  const logo = document.getElementById('sidebar-logo');
   const texts = document.querySelectorAll('.sidebar-text');
 
   // Check current state
@@ -14,7 +14,7 @@ function toggleSidebar() {
     sidebar.classList.add('w-64');
     content.classList.remove('md:ml-16');
     content.classList.add('md:ml-64');
-    title.classList.remove('hidden');
+    logo.classList.remove('hidden');
 
     texts.forEach((text) => text.classList.remove('hidden'));
     setTimeout(() => {
@@ -35,6 +35,6 @@ function toggleSidebar() {
     sidebar.classList.add('w-16');
     content.classList.remove('md:ml-64');
     content.classList.add('md:ml-16');
-    title.classList.add('hidden');
+    logo.classList.add('hidden');
   }
 }
